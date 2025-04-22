@@ -20,7 +20,7 @@ app.get(`${config.prefix ?? ''}/`, (req, res) => {
     res.setHeader('Content-Type', 'text/plain');
     res.send('simple-webring-redirect');
 });
-app.get(`${config.prefix ?? ''}/:webring`, (req, res) => {
+app.get(`${config.prefix ?? ''}/:webring`, async (req, res) => {
     const webring = req.params.webring;
     const webringPath = path.join(__dirname, `config/webrings/${webring}.json`);
     if (!existsSync(webringPath)) {
@@ -29,7 +29,11 @@ app.get(`${config.prefix ?? ''}/:webring`, (req, res) => {
         res.send('cannot find webring ' + webring);
         return;
     }
-    const webringData = JSON.parse(readFileSync(webringPath, 'utf-8'));
+    let webringData = JSON.parse(readFileSync(webringPath, 'utf-8'));
+    if (webringData.outlink) {
+        let webringResponse = await fetch(webringData.outlink);
+        webringData = await webringResponse.json();
+    }
     if (req.query.way) {
         let member = webringData.members.find(({ username }) => username === req.query.name);
         res.setHeader('X-Webring-Name', webringData.name);
@@ -63,7 +67,7 @@ app.get(`${config.prefix ?? ''}/:webring`, (req, res) => {
     }
     else {
         res.setHeader('Content-Type', 'application/json');
-        res.send(readFileSync(webringPath, 'utf-8'));
+        res.send(JSON.stringify(webringData));
     }
 });
 app.listen(config.port, () => {
