@@ -1,0 +1,17 @@
+{
+  "name": "simple-webring-redirect",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@types/cors": "^2.8.17",
+    "cors": "^2.8.5",
+    "ultimate-express": "^1.4.4"
+  }
+}
