@@ -43,6 +43,7 @@ app.get(`${config.prefix ?? ''}/:webring`, (req, res) => {
             res.status(404);
             res.setHeader('Content-Type', 'text/plain');
             res.send('cannot find name ' + req.query.name);
+            return;
         }
         let memberIndex = webringData.members.findIndex(({ username }) => username === req.query.name);
         let nextMember = webringData.members[memberIndex + 1] || webringData.members[0];
